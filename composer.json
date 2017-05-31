@@ -1,0 +1,31 @@
+{
+    "name": "maxxxam/phumbor-yii",
+    "type": "library",
+    "description": "Phumbor, yii2 lib",
+    "keywords": ["GraphQL","yii2"],
+    "homepage": "",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Maxim Belkanov",
+            "email": "maxxxam-me@yandex.ru"
+        }
+    ],
+    "require": {
+        "php": ">=5.5.9",
+        "99designs/phumbor": "^1.2"
+    },
+    "require-dev": {
+
+    },
+    "autoload": {
+        "psr-4": {
+            "PhumborYii\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "classmap": [
+            "tests/"
+        ]
+    }
+}
