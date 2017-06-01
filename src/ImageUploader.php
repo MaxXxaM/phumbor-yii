@@ -69,7 +69,7 @@ class ImageUploader
      * @return bool
      */
     public function removeImage($fileName){
-        $curl = new Curl($this->getDeleteUrl($fileName));
+        $curl = new Curl($this->getFileUrl($fileName));
         $curl->setRequestDelete();
         $curl->exec();
         return $curl->isDeleted();
@@ -86,7 +86,7 @@ class ImageUploader
         return $fileName;
     }
 
-    private function getDeleteUrl($fileName){
+    public function getFileUrl($fileName){
         return $this->getUrl() . '/' . $this->getFileName($fileName);
     }
 

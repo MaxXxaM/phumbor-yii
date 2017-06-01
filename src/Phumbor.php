@@ -25,8 +25,22 @@ class Phumbor extends Component
         parent::__construct($config);
     }
 
+    /**
+     * @param $source
+     * @return Builder
+     */
     public function getUrlBuilder($source){
         return Builder::construct($this->server, $this->secret, $source);
+    }
+
+    /**
+     * Return full url by hash
+     * @param $fileName
+     * @return string
+     */
+    public function getFullUrl($fileName){
+        $uploader = new ImageUploader($this);
+        return $uploader->getFileUrl($fileName);
     }
 
     /**
@@ -47,6 +61,18 @@ class Phumbor extends Component
     public function remove($fileName){
         $uploader = new ImageUploader($this);
         return $uploader->removeImage($fileName);
+    }
+
+    /**
+     * Return id file by url
+     * @param $url
+     * @return bool
+     */
+    public function getImageId($url){
+        if (preg_match('/\/([a-z0-9]{32})\//', $url, $matches)) {
+            return $matches[1];
+        }
+        return false;
     }
 
 }
