@@ -8,20 +8,86 @@
 
 namespace PhumborYii;
 
-
+/**
+ * Class ImageUploader
+ *
+ * @property Phumbor $phumbor
+ * @property string $prefixServer
+ *
+ * @package PhumborYii
+ */
 class ImageUploader
 {
+    public $phumbor;
 
-    public static function sendRequest(){
-        $curl = curl_init();
-        curl_setopt($curl, CURLOPT_URL, $url);
-        curl_setopt($curl, CURLOPT_POST, true);
-        curl_setopt($curl, CURLOPT_SAFE_UPLOAD, true);
-        curl_setopt($curl, CURLOPT_POSTFIELDS, $data);
-        curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
-        $response = curl_exec($curl);
-        curl_close($curl);
-        return json_decode($response, true);
+    private $prefixServer = '/image';
 
+    public function __construct($phumbor)
+    {
+        $this->phumbor = $phumbor;
+        if ($this->phumbor->uploadServer === null){
+            $this->phumbor->uploadServer = $this->phumbor->server;
+        }
     }
+
+    /**
+     * Return upload server URL
+     * @return string
+     */
+    public function getUrl(){
+        return $this->phumbor->uploadServer . $this->prefixServer;
+    }
+
+    /**
+     * Return upload server URL
+     * @return string
+     */
+    public function getFullUrl($fileName){
+        return $this->phumbor->server . $fileName;
+    }
+
+    /**
+     * Upload image to Thumbor
+     * @param $file
+     * @return bool|string
+     */
+    public function uploadImage($file){
+        if ($this->phumbor->defaultFileName !== null){
+            $file['name'] = $this->phumbor->defaultFileName;
+        }
+        $curl = new Curl($this->getUrl());
+        $curl->setPostFile(Curl::getCurlFile($file));
+        if (!$curl->exec()){
+            return false;
+        }
+        return $this->getFullUrl($curl->getCreatedFileName());
+    }
+
+    /**
+     * Remove image from Thumbor file storage
+     * @param $fileName
+     * @return bool
+     */
+    public function removeImage($fileName){
+        $curl = new Curl($this->getDeleteUrl($fileName));
+        $curl->setRequestDelete();
+        $curl->exec();
+        return $curl->isDeleted();
+    }
+
+    /**
+     * Get default file name or return name
+     * @param $file
+     */
+    private function getFileName($fileName){
+        if ($this->phumbor->defaultFileName !== null){
+            return $fileName . '/' . $this->phumbor->defaultFileName;
+        }
+        return $fileName;
+    }
+
+    private function getDeleteUrl($fileName){
+        return $this->getUrl() . '/' . $this->getFileName($fileName);
+    }
+
 }

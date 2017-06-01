@@ -16,6 +16,8 @@ class Phumbor extends Component
 {
 
     public $server = 'http://localhost:8000';
+    public $uploadServer;
+    public $defaultFileName;
     public $secret;
 
     public function __construct(array $config = [])
@@ -27,8 +29,24 @@ class Phumbor extends Component
         return Builder::construct($this->server, $this->secret, $source);
     }
 
-    public function upload(){
+    /**
+     * Upload image to Thumbor by $_FILE data
+     * @param $file
+     * @return bool|string
+     */
+    public function upload($file){
+        $uploader = new ImageUploader($this);
+        return $uploader->uploadImage($file);
+    }
 
+    /**
+     * Remove image from Thumbor by hash (if set default fileName) OR full name - <hash>/fileName.png
+     * @param $fileName
+     * @return bool
+     */
+    public function remove($fileName){
+        $uploader = new ImageUploader($this);
+        return $uploader->removeImage($fileName);
     }
 
 }
