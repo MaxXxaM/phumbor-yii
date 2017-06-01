@@ -29,8 +29,8 @@ class Phumbor extends Component
      * @param $source
      * @return Builder
      */
-    public function getUrlBuilder($source){
-        return Builder::construct($this->server, $this->secret, $source);
+    public function getUrlBuilder($source, $uploadServer = false){
+        return Builder::construct($uploadServer ? $this->uploadServer : $this->server, $this->secret, $source);
     }
 
     /**
